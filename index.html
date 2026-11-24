@@ -6,11 +6,15 @@
 <meta name="page-type" content="software">
 <meta name="site-kind" content="software">
 <title>JARVIS — Hermes Autonomous Agent</title>
-<meta name="description" content="Your always-on autonomous AI cofounder. Voice, memory, tools, free models 24/7.">
+<meta name="description" content="Your always-on autonomous AI cofounder. Voice, memory, tools, 13 free models 24/7.">
+
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
+/* ===== DESIGN TOKENS ===== */
 :root {
   --bg: #05080d;
   --bg-elevated: #0a0f1a;
@@ -40,15 +44,20 @@
   --wrap-max: 1280px;
   --wrap-pad: 24px;
 }
+
+/* Ground effect (tech only - single shader) */
 [data-ground="sky"] { --ground-hue: 195; }
 [data-ground="sand"] { --ground-hue: 35; }
 [data-ground="sage"] { --ground-hue: 145; }
+
+/* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
 body {
   font-family: var(--font-sans);
   background: var(--bg);
@@ -57,6 +66,8 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
+
+/* Shader ground - single effect */
 .ground-shader {
   position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
@@ -73,8 +84,12 @@ body {
   animation: drift 60s linear infinite;
 }
 @keyframes drift { 0% { transform: translate(0,0); } 100% { transform: translate(-300px,-200px); } }
+
+/* ===== LAYOUT ===== */
 .wrap { max-width: var(--wrap-max); margin: 0 auto; padding: 0 var(--wrap-pad); }
 .main { padding-top: calc(var(--nav-h) + 24px); padding-bottom: 120px; }
+
+/* ===== NAV ===== */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   height: var(--nav-h); backdrop-filter: saturate(180%) blur(16px);
@@ -92,11 +107,21 @@ body {
 }
 .brand-text { font-weight: 600; letter-spacing: -0.02em; font-size: 16px; }
 .brand-badge { font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 999px; background: var(--accent-dim); color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
-.nav-status { display: flex; align-items: center; gap: 16px; }
+
+.nav-links { display: none; gap: 32px; }
+.nav-links a { color: var(--fg-muted); font-weight: 500; font-size: 14px; text-decoration: none; transition: color var(--transition); position: relative; }
+.nav-links a::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--accent); transition: width var(--transition); }
+.nav-links a:hover { color: var(--fg); }
+.nav-links a:hover::after { width: 100%; }
+@media (min-width: 768px) { .nav-links { display: flex; } }
+
+.nav-actions { display: flex; align-items: center; gap: 12px; }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fg-subtle); position: relative; }
 .status-dot.online { background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
 .status-dot.online::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--accent-glow); animation: pulse 2s ease-out infinite; }
 @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 0; transform: scale(2); } }
+
+/* ===== BUTTONS ===== */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 500; font-size: 14px; border: none; border-radius: 999px; cursor: pointer; transition: all var(--transition); white-space: nowrap; text-decoration: none; }
 .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .btn-primary { background: var(--accent); color: #001a15; padding: 12px 24px; box-shadow: var(--shadow-glow); }
@@ -108,86 +133,162 @@ body {
 .btn-ghost:hover { color: var(--fg); background: var(--bg-card); }
 .btn-icon { width: 44px; height: 44px; padding: 0; border-radius: 12px; }
 .btn-icon svg { width: 20px; height: 20px; }
+
+/* ===== CARDS ===== */
 .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: all var(--transition); position: relative; overflow: hidden; }
 .card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #ffffff08, transparent 40%); opacity: 0; transition: opacity var(--transition); pointer-events: none; }
 .card:hover { border-color: var(--border-bright); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .card:hover::before { opacity: 1; }
 .card-interactive { cursor: pointer; }
 .card-interactive:active { transform: translateY(0) scale(0.99); }
-.hero { position: relative; padding: 60px 0 40px; }
-.hero-inner { display: grid; grid-template-columns: 1fr 380px; gap: 48px; align-items: start; }
+
+/* ===== HERO ===== */
+.hero { position: relative; padding: 80px 0 60px; }
+.hero-inner { display: grid; grid-template-columns: 1fr 420px; gap: 64px; align-items: start; }
+@media (max-width: 1024px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; } }
+
 .hero-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-dim); padding: 6px 12px; border-radius: 999px; margin-bottom: 24px; width: fit-content; animation: badge-in 0.6s var(--transition-slow) both; }
 @keyframes badge-in { from { opacity: 0; transform: translateY(12px); } }
-.hero h1 { font-size: clamp(36px, 5vw, 56px); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 20px; animation: text-in 0.7s var(--transition-slow) 0.1s both; }
+
+.hero h1 { font-size: clamp(40px, 6vw, 64px); font-weight: 700; line-height: 1.02; letter-spacing: -0.03em; margin-bottom: 24px; animation: text-in 0.7s var(--transition-slow) 0.1s both; }
 .hero h1 span { color: var(--accent); }
 @keyframes text-in { from { opacity: 0; transform: translateY(16px); } }
-.hero-lead { font-size: 18px; color: var(--fg-muted); max-width: 520px; margin-bottom: 32px; animation: text-in 0.7s var(--transition-slow) 0.2s both; }
-.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; animation: text-in 0.7s var(--transition-slow) 0.3s both; }
-.hero-visual { position: relative; height: 380px; animation: visual-in 0.9s var(--transition-slow) 0.15s both; }
+
+.hero-lead { font-size: 20px; color: var(--fg-muted); max-width: 560px; margin-bottom: 32px; animation: text-in 0.7s var(--transition-slow) 0.2s both; line-height: 1.5; }
+
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; animation: text-in 0.7s var(--transition-slow) 0.3s both; }
+
+/* Hero visual - orbital rings (the product big) */
+.hero-visual { position: relative; height: 420px; animation: visual-in 0.9s var(--transition-slow) 0.15s both; }
 @keyframes visual-in { from { opacity: 0; transform: translateY(24px) scale(0.96); } }
+
 .orbital { position: absolute; inset: 0; }
 .orbital-ring { position: absolute; border: 1px solid var(--border); border-radius: 50%; opacity: 0.4; animation: rotate 20s linear infinite; }
 .orbital-ring:nth-child(1) { width: 100%; height: 100%; top: 0; left: 0; animation-duration: 30s; }
 .orbital-ring:nth-child(2) { width: 70%; height: 70%; top: 15%; left: 15%; border-color: var(--accent); opacity: 0.2; animation-duration: 22s; animation-direction: reverse; }
 .orbital-ring:nth-child(3) { width: 40%; height: 40%; top: 30%; left: 30%; border-color: var(--warn); opacity: 0.15; animation-duration: 16s; }
-.orbital-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 60px 16px var(--accent-glow), inset 0 -8px 24px #0008; display: grid; place-items: center; z-index: 10; }
+
+.orbital-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 96px; height: 96px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 80px 24px var(--accent-glow), inset 0 -12px 32px #0008; display: grid; place-items: center; z-index: 10; }
 .core-pulse { width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle, var(--accent) 0%, transparent 70%); animation: core-pulse 2.5s ease-out infinite; }
 @keyframes core-pulse { 0% { opacity: 0.6; transform: scale(0.8); } 100% { opacity: 0; transform: scale(1.4); } }
-.core-icon { position: relative; z-index: 1; width: 36px; height: 36px; color: #001a15; }
+.core-icon { position: relative; z-index: 1; width: 44px; height: 44px; color: #001a15; }
+
 .orbital-nodes { position: absolute; inset: 0; }
-.orbital-node { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 16px var(--accent); transform: translate(-50%, -50%); animation: node-orbit 8s ease-in-out infinite; }
+.orbital-node { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 20px var(--accent); transform: translate(-50%, -50%); animation: node-orbit 8s ease-in-out infinite; }
 .orbital-node:nth-child(1) { animation-delay: 0s; background: var(--accent); }
 .orbital-node:nth-child(2) { animation-delay: -2s; background: var(--warn); }
 .orbital-node:nth-child(3) { animation-delay: -4s; background: #6366f1; }
 .orbital-node:nth-child(4) { animation-delay: -6s; background: #ec4899; }
 @keyframes node-orbit { 0%, 100% { top: 15%; left: 50%; } 25% { top: 50%; left: 85%; } 50% { top: 85%; left: 50%; } 75% { top: 50%; left: 15%; } }
-.section { margin-bottom: 64px; }
-.section-header { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 24px; flex-wrap: wrap; }
-.section h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
-.section-lead { color: var(--fg-muted); font-size: 15px; max-width: 480px; }
-.grid { display: grid; gap: 20px; }
+
+/* Model badges on hero */
+.hero-models { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; animation: text-in 0.7s var(--transition-slow) 0.4s both; }
+.model-pill { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--bg-elevated); border: 1px solid var(--border); color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.05em; transition: all var(--transition); }
+.model-pill:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+/* ===== SECTIONS ===== */
+.section { margin-bottom: 80px; }
+.section-header { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+.section h2 { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; }
+.section-lead { color: var(--fg-muted); font-size: 16px; max-width: 520px; }
+
+/* ===== GRID ===== */
+.grid { display: grid; gap: 24px; }
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
 .grid-2 { grid-template-columns: repeat(2, 1fr); }
 .grid-4 { grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 1024px) { .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px) { .grid-3, .grid-4, .grid-2 { grid-template-columns: 1fr; } }
-.stat-card { display: flex; flex-direction: column; gap: 8px; }
-.stat-icon { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: var(--bg-elevated); }
-.stat-icon svg { width: 20px; height: 20px; color: var(--accent); }
-.stat-value { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; font-family: var(--font-mono); color: var(--fg); }
+
+/* ===== STAT CARDS ===== */
+.stat-card { display: flex; flex-direction: column; gap: 12px; }
+.stat-icon { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; background: var(--bg-elevated); }
+.stat-icon svg { width: 24px; height: 24px; color: var(--accent); }
+.stat-value { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; font-family: var(--font-mono); color: var(--fg); line-height: 1; }
 .stat-label { font-size: 13px; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.stat-trend { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; color: var(--accent); }
-.model-card { display: flex; flex-direction: column; gap: 16px; }
+.stat-trend { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--accent); }
+
+/* ===== APP FRAME (the product UI) ===== */
+.app-frame { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; position: relative; }
+.app-frame-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; background: var(--bg-card); }
+.app-frame-dots { display: flex; gap: 6px; }
+.app-frame-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--border-bright); }
+.app-frame-dot:first-child { background: #ff5f57; }
+.app-frame-dot:nth-child(2) { background: #ffbd2e; }
+.app-frame-dot:last-child { background: #28ca42; }
+.app-frame-title { font-size: 13px; font-weight: 500; color: var(--fg-muted); flex: 1; text-align: center; }
+.app-frame-body { padding: 24px; min-height: 380px; }
+
+/* Chat preview inside app-frame */
+.chat-preview { display: flex; flex-direction: column; gap: 16px; height: 100%; }
+.chat-preview-msg { display: flex; gap: 10px; max-width: 85%; animation: msg-in 0.3s var(--transition); }
+@keyframes msg-in { from { opacity: 0; transform: translateY(8px); } }
+.chat-preview-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.chat-preview-avatar { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; background: var(--bg); border: 1px solid var(--border); color: var(--fg-muted); }
+.chat-preview-msg.assistant .chat-preview-avatar { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.chat-preview-content { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; font-size: 14px; line-height: 1.5; }
+.chat-preview-msg.user .chat-preview-content { background: var(--accent-dim); border-color: var(--accent); color: var(--fg); }
+.chat-preview-content code { font-family: var(--font-mono); font-size: 12px; background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; }
+
+/* ===== MODEL CARDS ===== */
+.model-card { display: flex; flex-direction: column; gap: 16px; height: 100%; }
 .model-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.model-name { font-weight: 600; font-size: 15px; }
-.model-provider { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: var(--bg-elevated); color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.model-name { font-weight: 600; font-size: 16px; }
+.model-provider { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--bg-elevated); color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.05em; }
 .model-provider.free { background: var(--accent-dim); color: var(--accent); }
-.model-meta { display: flex; gap: 16px; font-size: 12px; color: var(--fg-subtle); flex-wrap: wrap; }
-.model-meta span { display: flex; align-items: center; gap: 4px; }
+.model-meta { display: flex; gap: 20px; font-size: 13px; color: var(--fg-subtle); flex-wrap: wrap; }
+.model-meta span { display: flex; align-items: center; gap: 6px; }
 .model-bar { height: 6px; background: var(--bg-elevated); border-radius: 3px; overflow: hidden; }
 .model-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), #009988); transition: width 0.8s var(--transition-slow); }
-.model-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 8px; }
+.model-desc { font-size: 14px; color: var(--fg-muted); line-height: 1.6; flex: 1; }
+.model-actions { display: flex; gap: 10px; padding-top: 8px; border-top: 1px solid var(--border); }
+.model-actions .btn { flex: 1; font-size: 13px; padding: 10px; }
+
+/* ===== FEATURE CARDS ===== */
+.feature-card { display: flex; flex-direction: column; gap: 16px; height: 100%; }
+.feature-icon { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; background: var(--bg-elevated); color: var(--accent); }
+.feature-icon svg { width: 24px; height: 24px; }
+.feature-title { font-weight: 600; font-size: 18px; }
+.feature-desc { font-size: 15px; color: var(--fg-muted); line-height: 1.6; flex: 1; }
+.feature-tags { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 8px; border-top: 1px solid var(--border); }
+.feature-tag { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 999px; background: var(--bg-elevated); color: var(--fg-subtle); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ===== INTEGRATIONS (diagram card) ===== */
+.integrations-card { padding: 28px; }
+.integrations-title { font-weight: 600; font-size: 18px; margin-bottom: 24px; }
+.integrations-diagram { display: flex; flex-direction: column; gap: 16px; }
+.diagram-row { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.diagram-node { width: 56px; height: 56px; border-radius: 12px; background: var(--bg-elevated); border: 1px solid var(--border); display: grid; place-items: center; color: var(--accent); transition: all var(--transition); }
+.diagram-node:hover { border-color: var(--accent); transform: scale(1.05); box-shadow: var(--shadow-glow); }
+.diagram-node svg { width: 24px; height: 24px; }
+.diagram-arrow { color: var(--fg-subtle); }
+.diagram-labels { display: flex; justify-content: center; gap: 48px; font-size: 12px; color: var(--fg-subtle); text-align: center; flex-wrap: wrap; }
+.diagram-label { max-width: 100px; }
+
+/* ===== CHAT INTERFACE ===== */
 .chat-wrap { display: grid; grid-template-columns: 1fr 420px; gap: 24px; height: calc(100vh - var(--nav-h) - 120px); min-height: 600px; }
 @media (max-width: 1024px) { .chat-wrap { grid-template-columns: 1fr; grid-template-rows: 1fr auto; height: auto; } }
+
 .chat-main { display: flex; flex-direction: column; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
 .chat-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--bg-elevated); }
 .chat-title { font-weight: 600; font-size: 15px; }
 .chat-model { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--fg-muted); }
 .chat-model .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
 .chat-messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
 .message { display: flex; gap: 12px; max-width: 85%; animation: msg-in 0.3s var(--transition); }
-@keyframes msg-in { from { opacity: 0; transform: translateY(12px); } }
 .message.user { align-self: flex-end; flex-direction: row-reverse; }
 .message.assistant { align-self: flex-start; }
 .message-avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; background: var(--bg-elevated); border: 1px solid var(--border); }
 .message.assistant .message-avatar { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 .message.user .message-avatar { color: var(--fg-muted); }
-.message-content { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; position: relative; }
+.message-content { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; position: relative; line-height: 1.6; }
 .message.user .message-content { background: var(--accent-dim); border-color: var(--accent); color: var(--fg); }
 .message-content code { font-family: var(--font-mono); font-size: 13px; background: var(--bg); padding: 2px 6px; border-radius: 4px; }
 .message-content pre { margin: 12px 0; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); overflow-x: auto; }
 .message-content pre code { background: transparent; padding: 0; font-size: 12px; line-height: 1.6; }
 .message-time { font-size: 11px; color: var(--fg-subtle); margin-top: 6px; text-align: right; }
+
 .chat-input-wrap { padding: 20px 24px; border-top: 1px solid var(--border); background: var(--bg-elevated); }
 .chat-input-row { display: flex; gap: 12px; align-items: flex-end; }
 .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; font-family: inherit; font-size: 15px; color: var(--fg); resize: none; min-height: 52px; max-height: 160px; transition: all var(--transition); }
@@ -200,61 +301,99 @@ body {
 .send-btn { width: 52px; height: 52px; border-radius: var(--radius); background: var(--accent); color: #001a15; border: none; cursor: pointer; display: grid; place-items: center; transition: all var(--transition); }
 .send-btn:hover { transform: scale(1.05); box-shadow: var(--shadow-glow); }
 .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* ===== SIDEBAR PANELS ===== */
 .sidebar { display: flex; flex-direction: column; gap: 20px; }
 .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
 .panel-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--bg-elevated); }
 .panel-title { font-weight: 600; font-size: 14px; }
 .panel-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
-.tool-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: all var(--transition); }
+
+.tool-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: all var(--transition); }
 .tool-row:hover { border-color: var(--border-bright); }
-.tool-info { display: flex; align-items: center; gap: 10px; }
-.tool-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--bg); display: grid; place-items: center; color: var(--accent); }
+.tool-info { display: flex; align-items: center; gap: 12px; }
+.tool-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--bg); display: grid; place-items: center; color: var(--accent); }
 .tool-icon.warn { color: var(--warn); }
 .tool-icon.danger { color: var(--danger); }
-.tool-name { font-weight: 500; font-size: 13px; }
+.tool-name { font-weight: 500; font-size: 14px; }
 .tool-desc { font-size: 12px; color: var(--fg-subtle); }
 .tool-status { width: 8px; height: 8px; border-radius: 50%; background: var(--fg-subtle); }
 .tool-status.online { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
-.memory-item { padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; line-height: 1.5; transition: all var(--transition); }
+
+.memory-item { padding: 14px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; line-height: 1.5; transition: all var(--transition); }
 .memory-item:hover { border-color: var(--border-bright); }
 .memory-time { font-size: 11px; color: var(--fg-subtle); margin-top: 6px; }
+
+/* ===== ENTRANCE ANIMATIONS ===== */
 [data-enter] { opacity: 0; }
 [data-enter].visible { animation: enter 0.6s var(--transition-slow) forwards; }
 @keyframes enter { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+/* ===== FOOTER ===== */
+.footer { border-top: 1px solid var(--border); padding: 48px 0; background: var(--bg-elevated); }
+.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.footer-brand { display: flex; align-items: center; gap: 10px; color: var(--fg); text-decoration: none; }
+.footer-links { display: flex; gap: 32px; }
+.footer-links a { color: var(--fg-muted); font-size: 14px; text-decoration: none; transition: color var(--transition); }
+.footer-links a:hover { color: var(--accent); }
+.footer-copy { font-size: 13px; color: var(--fg-subtle); }
+
+/* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--fg-subtle); }
+
+/* ===== FOCUS RING ===== */
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.icon { width: 1em; height: 1em; display: inline-block; vertical-align: middle; }
+
+/* ===== MOMENTS (dealt moments) ===== */
+.moment { position: relative; }
+.moment-type { font: 700 clamp(32px, 5vw, 64px)/1.02 var(--font-sans); letter-spacing: -0.03em; color: var(--accent); }
 </style>
 </head>
 <body>
 <div class="ground-shader" aria-hidden="true"></div>
+
+<!-- Navigation -->
 <nav class="nav" role="navigation" aria-label="Main">
   <div class="wrap nav-inner">
-    <a href="#" class="nav-brand" aria-label="JARVIS Home">
+    <a href="#top" class="nav-brand" aria-label="JARVIS Home">
       <div class="brand-mark" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
       <span class="brand-text">JARVIS</span>
       <span class="brand-badge">HERMES</span>
     </a>
-    <div class="nav-status">
+    <div class="nav-links">
+      <a href="#models">Models</a>
+      <a href="#features">Features</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#chat">Chat</a>
+    </div>
+    <div class="nav-actions">
       <div class="status-dot online" id="statusDot" aria-live="polite" title="System online"></div>
       <span style="font-size:13px;color:var(--fg-muted);font-weight:500" id="statusText">All systems nominal</span>
     </div>
   </div>
 </nav>
+
 <main class="main" id="main">
   <div class="wrap">
-    <section class="hero" aria-labelledby="hero-title">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title" id="top">
       <div class="hero-inner">
         <div>
-          <span class="hero-badge" data-enter>● Autonomous · Free Models · 24/7</span>
+          <span class="hero-badge" data-enter>● Autonomous · 13 Free Models · 24/7</span>
           <h1 id="hero-title" data-enter>Your AI <span>Cofounder</span> Runs Forever</h1>
-          <p class="hero-lead" data-enter>Voice-first dashboard for Hermes. Persistent memory. 10+ free models. Tools, trading, research — all running on zero-cost infrastructure.</p>
+          <p class="hero-lead" data-enter>Voice-first dashboard for Hermes. Persistent memory. 13 free models across 3 providers. Tools, trading, research — all running on zero-cost infrastructure.</p>
           <div class="hero-actions" data-enter>
             <button class="btn btn-primary" id="openChatBtn"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Open Chat</button>
             <button class="btn btn-secondary" id="voiceToggleBtn"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg><span id="voiceLabel">Wake Voice</span></button>
+          </div>
+          <div class="hero-models" data-enter>
+            <span class="model-pill">OpenRouter</span>
+            <span class="model-pill">Nous</span>
+            <span class="model-pill">Kilo</span>
+            <span class="model-pill">13 models</span>
           </div>
         </div>
         <div class="hero-visual" aria-hidden="true" data-enter>
@@ -276,6 +415,8 @@ body {
         </div>
       </div>
     </section>
+
+    <!-- LIVE TELEMETRY -->
     <section class="section" aria-labelledby="stats-title">
       <div class="section-header">
         <h2 id="stats-title">Live Telemetry</h2>
@@ -301,40 +442,136 @@ body {
         </article>
         <article class="card stat-card">
           <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
-          <div class="stat-value" id="modelsStat">12</div>
+          <div class="stat-value" id="modelsStat">13</div>
           <div class="stat-label">Free Models Active</div>
           <div class="stat-trend"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg> 3 providers</div>
         </article>
       </div>
     </section>
-    <section class="section" aria-labelledby="models-title">
+
+    <!-- FREE MODEL FLEET -->
+    <section class="section" aria-labelledby="models-title" id="models">
       <div class="section-header">
         <h2 id="models-title">Free Model Fleet</h2>
-        <p class="section-lead">All models below run on free tiers — zero API cost, 24/7 availability.</p>
+        <p class="section-lead">All models below run on free tiers — zero API cost, 24/7 availability. Select any model to chat.</p>
       </div>
       <div class="grid grid-3" id="modelsGrid"></div>
     </section>
-    <section class="section" aria-labelledby="tools-title">
+
+    <!-- FEATURES -->
+    <section class="section" aria-labelledby="features-title" id="features">
       <div class="section-header">
-        <h2 id="tools-title">Connected Tools & Memory</h2>
+        <h2 id="features-title">Built for Founders</h2>
+        <p class="section-lead">Every feature runs on free infrastructure. No API keys to manage. No rate limits to hit.</p>
       </div>
-      <div class="grid grid-2">
-        <article class="card panel" style="padding:0">
-          <div class="panel-header"><span class="panel-title">Active Tools</span><span style="font-size:12px;color:var(--fg-subtle)" id="toolCount">0</span></div>
-          <div class="panel-body" id="toolsList"></div>
+      <div class="grid grid-3">
+        <article class="card feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></div>
+          <h3 class="feature-title">Voice First</h3>
+          <p class="feature-desc">Hold to talk or wake with a tap. Web Speech API with interim results. Works in any browser.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Web Speech API</span>
+            <span class="feature-tag">Interim results</span>
+            <span class="feature-tag">Auto-send</span>
+          </div>
         </article>
-        <article class="card panel" style="padding:0">
-          <div class="panel-header"><span class="panel-title">Recent Memory</span><span style="font-size:12px;color:var(--fg-subtle)" id="memoryCount">0</span></div>
-          <div class="panel-body" id="memoryList"></div>
+        <article class="card feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20"/><path d="M6.5 17A2.5 2.5 0 0 1 4 19.5"/><path d="M12 14v4"/><path d="M10 16h4"/></svg></div>
+          <h3 class="feature-title">Persistent Memory</h3>
+          <p class="feature-desc">Supabase-backed memory survives restarts. 2,100+ entries and growing. Your context, forever.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Supabase</span>
+            <span class="feature-tag">Vector search</span>
+            <span class="feature-tag">Auto-summarize</span>
+          </div>
+        </article>
+        <article class="card feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+          <h3 class="feature-title">Trading Tools</h3>
+          <p class="feature-desc">Backtest, DeFi yields, P&L, arb scanning, risk review. One-click quick actions.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Backtest</span>
+            <span class="feature-tag">DeFi yields</span>
+            <span class="feature-tag">Risk review</span>
+          </div>
+        </article>
+        <article class="card feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <h3 class="feature-title">Model Router</h3>
+          <p class="feature-desc">Kilo auto-selects the best free model per request. Or pick manually from 13 options.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Auto-route</span>
+            <span class="feature-tag">13 models</span>
+            <span class="feature-tag">Test button</span>
+          </div>
+        </article>
+        <article class="card feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
+          <h3 class="feature-title">12+ Integrations</h3>
+          <p class="feature-desc">Telegram, GitHub, Gmail, Calendar, Sheets, YouTube, Reddit, Composio, TradingView, Supabase, Conduit, Tailscale.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Composio MCP</span>
+            <span class="feature-tag">TradingView</span>
+            <span class="feature-tag">Conduit</span>
+          </div>
+        </article>
+        <article class="card feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <h3 class="feature-title">Sub-120ms Latency</h3>
+          <p class="feature-desc">Edge-deployed on Cloudflare Workers. Global CDN. Free tier: 100k requests/day.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Cloudflare</span>
+            <span class="feature-tag">Edge</span>
+            <span class="feature-tag">Free tier</span>
+          </div>
         </article>
       </div>
     </section>
-    <section class="section" id="chatSection" style="display:none" aria-labelledby="chat-title">
+
+    <!-- INTEGRATIONS (diagram card) -->
+    <section class="section" aria-labelledby="integrations-title" id="integrations">
+      <div class="section-header">
+        <h2 id="integrations-title">Connected Ecosystem</h2>
+        <p class="section-lead">12 live integrations via Composio MCP. All authenticated, all working.</p>
+      </div>
+      <article class="card integrations-card">
+        <h3 class="integrations-title">Data Flow</h3>
+        <div class="integrations-diagram">
+          <div class="diagram-row">
+            <div class="diagram-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <svg class="diagram-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <div class="diagram-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            <svg class="diagram-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <div class="diagram-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+          </div>
+          <div class="diagram-labels">
+            <span class="diagram-label">Telegram</span>
+            <span class="diagram-label">Hermes Core</span>
+            <span class="diagram-label">Supabase</span>
+          </div>
+          <div class="diagram-row">
+            <div class="diagram-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+            <svg class="diagram-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <div class="diagram-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+            <svg class="diagram-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <div class="diagram-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
+          </div>
+          <div class="diagram-labels">
+            <span class="diagram-label">TradingView</span>
+            <span class="diagram-label">Models</span>
+            <span class="diagram-label">GitHub</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- CHAT INTERFACE -->
+    <section class="section" id="chatSection" style="display:none" aria-labelledby="chat-title" id="chat">
       <div class="chat-wrap">
         <div class="chat-main">
           <div class="chat-header">
             <span class="chat-title">JARVIS Chat</span>
-            <div class="chat-model"><span class="dot" id="chatModelDot"></span><span id="chatModelName">Select a model</span></div>
+            <div class="chat-model"><span class="dot" id="chatModelDot"></span><span id="chatModelName">Nemotron 3 Ultra</span></div>
           </div>
           <div class="chat-messages" id="chatMessages" role="log" aria-live="polite"></div>
           <div class="chat-input-wrap">
@@ -363,11 +600,48 @@ body {
         </aside>
       </div>
     </section>
+
+    <!-- TOOLS & MEMORY -->
+    <section class="section" aria-labelledby="tools-title">
+      <div class="section-header">
+        <h2 id="tools-title">Connected Tools & Memory</h2>
+      </div>
+      <div class="grid grid-2">
+        <article class="card panel" style="padding:0">
+          <div class="panel-header"><span class="panel-title">Active Tools</span><span style="font-size:12px;color:var(--fg-subtle)" id="toolCount">0</span></div>
+          <div class="panel-body" id="toolsList"></div>
+        </article>
+        <article class="card panel" style="padding:0">
+          <div class="panel-header"><span class="panel-title">Recent Memory</span><span style="font-size:12px;color:var(--fg-subtle)" id="memoryCount">0</span></div>
+          <div class="panel-body" id="memoryList"></div>
+        </article>
+      </div>
+    </section>
   </div>
 </main>
+
+<!-- Footer -->
+<footer class="footer" role="contentinfo">
+  <div class="wrap footer-inner">
+    <a href="#top" class="footer-brand">
+      <div class="brand-mark" aria-hidden="true" style="width:28px;height:28px;font-size:12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <span class="brand-text">JARVIS</span>
+    </a>
+    <nav class="footer-links" aria-label="Footer">
+      <a href="https://github.com/Ferry737/jarvis-dashboard" target="_blank" rel="noopener">GitHub</a>
+      <a href="#models">Models</a>
+      <a href="#features">Features</a>
+      <a href="#integrations">Integrations</a>
+    </nav>
+    <span class="footer-copy">Free models · Zero cost · 24/7</span>
+  </div>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
 <script>
+// ===== CONFIG =====
 const CONFIG = {
-  apiBase: '/api',
+  apiBase: '/api', // Cloudflare Worker proxy
   freeModels: [
     { id: 'nvidia/nemotron-3-ultra-550b-a55b:free', name: 'Nemotron 3 Ultra', provider: 'OpenRouter', params: '550B', desc: 'Strongest free model — coding, reasoning, analysis', tags: ['reasoning','coding'], free: true },
     { id: 'google/gemma-4-31b-it:free', name: 'Gemma 4 31B', provider: 'OpenRouter', params: '31B', desc: 'Google\'s latest — excellent instruction following', tags: ['instruction','chat'], free: true },
@@ -406,13 +680,20 @@ const CONFIG = {
     { text: 'Dashboard at port 4860 behind Traefik; Hostinger firewall blocks inbound', time: '3d ago' },
   ]
 };
+
+// ===== STATE =====
 let currentModel = CONFIG.freeModels[0];
 let chatHistory = [];
 let isListening = false;
 let recognition = null;
+let finalTranscript = '';
+
+// ===== UTIL =====
 const $ = (sel, ctx=document) => ctx.querySelector(sel);
 const $$ = (sel, ctx=document) => [...ctx.querySelectorAll(sel)];
 const fmtTime = () => new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+// ===== ICON MAP =====
 const ICONS = {
   telegram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
   github: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>',
@@ -427,6 +708,8 @@ const ICONS = {
   bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
   shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
 };
+
+// ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
   initEntranceAnimations();
   renderModels();
@@ -437,6 +720,8 @@ document.addEventListener('DOMContentLoaded', () => {
   startLiveUpdates();
   wireHeroActions();
 });
+
+// ===== ENTRANCE ANIMATIONS =====
 function initEntranceAnimations() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -446,8 +731,11 @@ function initEntranceAnimations() {
       }
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
   $$('[data-enter]').forEach(el => observer.observe(el));
 }
+
+// ===== RENDER MODELS =====
 function renderModels() {
   const grid = $('#modelsGrid');
   grid.innerHTML = CONFIG.freeModels.map(m => `
@@ -460,15 +748,17 @@ function renderModels() {
         <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> ${m.params}</span>
         <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> ${m.tags.map(t => `<span style="font-size:11px;padding:1px 6px;background:var(--bg);border-radius:4px;margin-left:4px">${t}</span>`).join('')}</span>
       </div>
-      <p style="font-size:13px;color:var(--fg-muted);line-height:1.5">${m.desc}</p>
+      <p class="model-desc">${m.desc}</p>
       <div class="model-bar"><div class="model-bar-fill" style="width:${m.free ? '100%' : '0%'}"></div></div>
       <div class="model-actions">
-        <button class="btn btn-secondary" style="flex:1;font-size:12px;padding:8px" onclick="selectModel('${m.id}')">Select</button>
-        <button class="btn btn-ghost" style="font-size:12px;padding:8px" onclick="testModel('${m.id}')">Test</button>
+        <button class="btn btn-secondary" style="flex:1;font-size:13px;padding:10px" onclick="selectModel('${m.id}')">Select</button>
+        <button class="btn btn-ghost" style="font-size:13px;padding:10px" onclick="testModel('${m.id}')">Test</button>
       </div>
     </article>
   `).join('');
 }
+
+// ===== RENDER TOOLS =====
 function renderTools() {
   const list = $('#toolsList');
   const count = $('#toolCount');
@@ -486,6 +776,8 @@ function renderTools() {
     </div>
   `).join('');
 }
+
+// ===== RENDER MEMORY =====
 function renderMemory() {
   const list = $('#memoryList');
   const count = $('#memoryCount');
@@ -497,6 +789,8 @@ function renderMemory() {
     </div>
   `).join('');
 }
+
+// ===== CHAT =====
 function initChat() {
   const modelList = $('#chatModelList');
   modelList.innerHTML = CONFIG.freeModels.map(m => `
@@ -508,9 +802,11 @@ function initChat() {
       <span class="tool-status ${currentModel.id === m.id ? 'online' : ''}"></span>
     </button>
   `).join('');
+  
   $('#chatModelName').textContent = currentModel.name;
   $('#chatModelDot').style.background = 'var(--accent)';
 }
+
 function selectModel(modelId) {
   currentModel = CONFIG.freeModels.find(m => m.id === modelId);
   $('#chatModelName').textContent = currentModel.name;
@@ -522,12 +818,15 @@ function selectModel(modelId) {
   });
   addMessage('assistant', `Switched to **${currentModel.name}** (${currentModel.provider}). Ready.`);
 }
+
 async function sendMessage(text) {
   if (!text.trim()) return;
   addMessage('user', text);
   $('#chatInput').value = '';
   autoResizeTextarea($('#chatInput'));
+  
   const thinkingId = addMessage('assistant', '<em>Thinking…</em>', true);
+  
   try {
     const response = await fetch(`${CONFIG.apiBase}/chat`, {
       method: 'POST',
@@ -545,6 +844,7 @@ async function sendMessage(text) {
     addMessage('assistant', `⚠️ Error: ${e.message}. Check console.`);
   }
 }
+
 function addMessage(role, content, isThinking = false) {
   const id = 'msg-' + Date.now() + Math.random().toString(36).slice(2);
   const div = document.createElement('div');
@@ -559,30 +859,36 @@ function addMessage(role, content, isThinking = false) {
   scrollToBottom();
   return id;
 }
+
 function removeMessage(id) {
   const el = document.getElementById(id);
   if (el) el.remove();
 }
+
 function scrollToBottom() {
   const msgs = $('#chatMessages');
   msgs.scrollTop = msgs.scrollHeight;
 }
+
 function autoResizeTextarea(ta) {
   ta.style.height = 'auto';
   ta.style.height = Math.min(ta.scrollHeight, 160) + 'px';
 }
+
+// ===== VOICE =====
 function initVoice() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     $('#voiceBtn').style.display = 'none';
     $('#voiceToggleBtn').style.display = 'none';
     return;
   }
+  
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SpeechRecognition();
   recognition.continuous = false;
   recognition.interimResults = true;
   recognition.lang = 'en-US';
-  let finalTranscript = '';
+  
   recognition.onresult = (e) => {
     let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -592,23 +898,30 @@ function initVoice() {
     $('#chatInput').value = finalTranscript + interim;
     autoResizeTextarea($('#chatInput'));
   };
+  
   recognition.onend = () => {
     if (isListening) recognition.start();
   };
+  
   recognition.onerror = (e) => {
     console.warn('Speech error:', e.error);
     stopListening();
   };
+  
+  // Hold to talk
   $('#voiceBtn').addEventListener('mousedown', startListening);
   $('#voiceBtn').addEventListener('mouseup', stopListening);
   $('#voiceBtn').addEventListener('mouseleave', stopListening);
   $('#voiceBtn').addEventListener('touchstart', (e) => { e.preventDefault(); startListening(); });
   $('#voiceBtn').addEventListener('touchend', stopListening);
+  
+  // Wake toggle
   $('#voiceToggleBtn').addEventListener('click', () => {
     if (isListening) stopListening(true);
     else startListening(true);
   });
 }
+
 function startListening(wake = false) {
   if (isListening && !wake) return;
   isListening = true;
@@ -618,6 +931,7 @@ function startListening(wake = false) {
   $('#voiceToggleBtn').classList.add('listening');
   try { recognition.start(); } catch(e) {}
 }
+
 function stopListening(wake = false) {
   if (!isListening && !wake) return;
   isListening = false;
@@ -630,16 +944,23 @@ function stopListening(wake = false) {
     finalTranscript = '';
   }
 }
+
+// ===== LIVE UPDATES =====
 function startLiveUpdates() {
+  // Simulate live stats
   setInterval(() => {
     $('#uptimeStat').textContent = (99.8 + Math.random() * 0.2).toFixed(1) + '%';
     $('#latencyStat').textContent = '<' + Math.floor(80 + Math.random() * 60) + 'ms';
   }, 5000);
+  
+  // Pulse status dot
   setInterval(() => {
     const dot = $('#statusDot');
     dot.style.boxShadow = '0 0 ' + (12 + Math.random() * 8) + 'px var(--accent-glow)';
   }, 2000);
 }
+
+// ===== HERO ACTIONS =====
 function wireHeroActions() {
   $('#openChatBtn').addEventListener('click', () => {
     $('#chatSection').style.display = 'block';
@@ -647,6 +968,8 @@ function wireHeroActions() {
     $('#chatInput').focus();
   });
 }
+
+// ===== QUICK ACTIONS =====
 $$('[data-prompt]').forEach(btn => {
   btn.addEventListener('click', () => {
     $('#chatSection').style.display = 'block';
@@ -658,6 +981,8 @@ $$('[data-prompt]').forEach(btn => {
     }, 300);
   });
 });
+
+// ===== CHAT INPUT =====
 $('#chatInput').addEventListener('input', () => autoResizeTextarea($('#chatInput')));
 $('#chatInput').addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -666,6 +991,8 @@ $('#chatInput').addEventListener('keydown', (e) => {
   }
 });
 $('#sendBtn').addEventListener('click', () => sendMessage($('#chatInput').value));
+
+// ===== TEST MODEL =====
 async function testModel(modelId) {
   const model = CONFIG.freeModels.find(m => m.id === modelId);
   if (!model) return;

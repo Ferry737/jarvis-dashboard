@@ -42,13 +42,14 @@ The authoritative list lives in [`worker/worker.js`](./worker/worker.js) → `MO
 
 ```
 Browser (GitHub Pages)                Cloudflare Worker (free tier)          Model providers
-┌────────────────────┐   POST /api/chat  ┌─────────────────────────┐         ┌──────────────┐
-│  index.html        │ ─────────────────▶ │  worker.js               │ ──────▶ │ OpenRouter   │
+┌────────────────────┐   POST /api/chat  ┌──────────────────────────┐         ┌──────────────┐
+│  index.html        │ ────────────────▶ │  worker.js               │ ──────▶ │ OpenRouter   │
 │  · voice (Web      │                   │  · picks provider by     │         │ Nous         │
 │    Speech API)     │ ◀──────────────── │    model id              │ ◀────── │ Kilo         │
 │  · chat UI         │    SSE / JSON     │  · injects API key from  │         │ Inception    │
-│  · telemetry       │                   │    env (never in code)   │         └─────────────────────────────┘
-└────────────────────┘                   │  · CORS + rate guard   │                                          └───────────────────────────┘
+│  · telemetry       │                   │    env (never in code)   │         └──────────────┘
+└────────────────────┘                   │  · CORS + rate guard     │
+                                          └──────────────────────────┘
 ```
 
 - **Front-end:** a single `index.html` — no build step, no framework. Syne + JetBrains Mono, dark glass theme.

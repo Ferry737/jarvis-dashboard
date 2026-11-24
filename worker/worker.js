@@ -8,7 +8,7 @@ const MODEL_PROVIDERS = {
   // OpenRouter models
   'nvidia/nemotron-3-ultra-550b-a55b:free': { provider: 'openrouter', model: 'nvidia/nemotron-3-ultra-550b-a55b:free' },
   'google/gemma-4-31b-it:free': { provider: 'openrouter', model: 'google/gemma-4-31b-it:free' },
-  'nvidaa/nemotron-3-nano-omni-30b-a3b-reasoning:free': { provider: 'openrouter', model: 'nvidaa/nemotron-3-nano-omni-30b-a3b-reasoning:free' },
+  'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free': { provider: 'openrouter', model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free' },
   'nvidia/nemotron-3.5-super-vl:free': { provider: 'openrouter', model: 'nvidia/nemotron-3.5-super-vl:free' },
   'inclusionai/ling-3.2-flash:free': { provider: 'openrouter', model: 'inclusionai/ling-3.2-flash:free' },
   'liquid/lfm-3-1.7b:free': { provider: 'openrouter', model: 'liquid/lfm-3-1.7b:free' },
@@ -80,7 +80,7 @@ async function fetchWithTimeout(url, options, timeoutMs = 30000) {
   }
 }
 
-// ===== MAI: HANDLER =====
+// ===== MAIN HANDLER =====
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -112,7 +112,7 @@ export default {
     }
 
     return errorResponse('Not found', 404);
-  };
+  },
 };
 
 // ===== CHAT HANDLER =====

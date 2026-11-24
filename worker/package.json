@@ -1,0 +1,22 @@
+{
+  "name": "jarvis-dashboard",
+  "version": "1.0.0",
+  "description": "JARVIS Dashboard for Hermes - Voice-first AI copounder with 13 free models",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler deploy",
+    "deploy:preview": "wrangler deploy --dry-run",
+    "logs": "wrangler tail",
+    "secret:openrouter": "wrangler secret put OPENROUTER_API_KEY",
+    "secret:kilocode": "wrangler secret put KILOCODE_API_KEY",
+    "secret:nous": "wrangler secret put NOUS_API_KEY",
+    "secret:inception": "wrangler secret put INCEPTION_API_KEY"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

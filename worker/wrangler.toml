@@ -1,0 +1,13 @@
+name = "jarvis-dashboard-api"
+main = "worker.js"
+compatibility_date = "2026-11-24"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# No sensitive vars here - use wrangler secret put
+
+[observability]
+enabled = true
+
+[triggers]
+crons = []
